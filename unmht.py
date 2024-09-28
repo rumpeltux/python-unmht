@@ -28,7 +28,8 @@ def extract_mhtml(file_path: str, output_dir: str="."):
 
         if content_location:
             filename = os.path.basename(content_location)
-        else:
+
+        if not filename:
             ext = os.path.basename(content_type)
             filename = os.path.basename(content_id) + "." + ext
 
