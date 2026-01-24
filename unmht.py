@@ -26,6 +26,7 @@ def extract_mhtml(file_path: str, output_dir: str="."):
         content_type = part.get_content_type()
         content_id = part.get("Content-ID")
         content_location = part.get("Content-Location")
+        filename = None
 
         if content_location:
             filename = os.path.basename(content_location)
