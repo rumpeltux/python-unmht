@@ -2,6 +2,7 @@
 import email
 import os
 import os.path
+import hashlib
 
 from email.policy import default
 
@@ -26,7 +27,11 @@ def extract_mhtml(file_path: str, output_dir: str="."):
         content_type = part.get_content_type()
         content_id = part.get("Content-ID")
         content_location = part.get("Content-Location")
+        payload = part.get_payload(decode=True)
         filename = None
+
+        if not content_id:  # create a random unique id if not present
+            content_id = str(hashlib.sha256(payload).hexdigest()[:8])
 
         if content_location:
             filename = os.path.basename(content_location)
@@ -36,7 +41,7 @@ def extract_mhtml(file_path: str, output_dir: str="."):
             filename = os.path.basename(content_id) + "." + ext
 
         with open(os.path.join(output_dir, filename), "wb") as out_file:
-            out_file.write(part.get_payload(decode=True))
+            out_file.write(payload)
 
 if __name__ == '__main__':
     import argparse
